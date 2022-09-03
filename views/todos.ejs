@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Todos</h1>
+    <h2>Personal Todos</h2>
     <ul>
     <% todos.forEach( el => { %>
             <li class='todoItem' data-id='<%=el._id%>'>
@@ -21,8 +21,24 @@
             </li>
     <% }) %>    
     </ul>
+    <h2>Shared Todos</h2>
+    <ul>
+    <% sharedTodos.forEach( el => { %>
+            <li class='todoItem' data-id='<%=el._id%>'>
+                <span class='<%= el.completed === true ? 'completed' : 'not'%>'><%= el.todo %></span>
+                <span class='del'> Delete </span>
+                <form action="/todos/shareTodo" method='POST'>
+                    <input type="text" placeholder="Share with someone" name='shareReceiver'>
+                    <input type="submit">
+                </form>
+            </li>
+    <% }) %>    
+    </ul>
 
     <h2><%= user.userName %> has <%= left %> things left to do.</h2>
+    
+    <h2><%= user.userName %> has <%= sharedLeft %> shared things left to do.</h2>
+
 
     <form action="/todos/createTodo" method='POST'>
         <input type="text" placeholder="Enter Todo Item" name='todoItem'>

@@ -5,16 +5,31 @@ module.exports = {
     getTodos: async (req, res) => {
         // console.log(req.user)
         try {
-            const todoItems = await Todo.find({ userId: req.user.id })
+            const todoItems = await Todo.find({
+                userId: req.user.id
+                // sharedId: req.user.id
+            })
+            const sharedItems = await Todo.find({
+                // userId: req.user.id
+                sharedId: req.user.id
+            })
+            // const sharedItems = await Todo.find({ sharedId: req.user.id })
             const itemsLeft = await Todo.countDocuments({
                 userId: req.user.id,
                 completed: false
             })
+            const sharedItemsLeft = await Todo.countDocuments({
+                sharedId: req.user.id,
+                completed: false
+            })
             res.render('todos.ejs', {
                 todos: todoItems,
+                sharedTodos: sharedItems,
                 left: itemsLeft,
+                sharedLeft: sharedItemsLeft,
                 user: req.user
             })
+            console.log(sharedItems)
         } catch (err) {
             console.log(err)
         }
@@ -26,13 +41,16 @@ module.exports = {
             const shareCreator = req.user.userName
             const shareCreatorId = req.user._id // MongoDb User Id for creator of the share
             const shareRecipient = req.body.shareReceiver // userName used to search DB from form
+            const itemText =
+                this.parentNode.childNodes[0].nextElementSibling.innerText
+
             // function to search the DB and find a userName that matches input from form, responds with entire user object
             const recipientData = await User.findOne({
                 userName: shareRecipient
             })
             // creating a todo for the recipient of the todo
             await Todo.create({
-                todo: 'Sharing todo test', // this is a test todo item will change later
+                todo: itemText, // this is a test todo item will change later
                 completed: false,
                 userId: recipientData._id, // Mongo DB Id for recipient
                 sharedId: shareCreatorId // Added a share creator id for later use
