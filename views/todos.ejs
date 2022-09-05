@@ -11,7 +11,7 @@
         <h2>Personal Todos</h2>
             <ul>
     <% todos.forEach( el => { %>
-            <li class='todoItem' dataId='<%=el._id%>'>
+            <li class='todoItem' data-id='<%=el._id%>'>
                 <span class='<%= el.completed === true ? 'completed' : 'not'%>'><%= el.todo %></span>
                 <span class='del'> Delete </span>
                 <form action="/todos/shareTodo" method='POST'>
