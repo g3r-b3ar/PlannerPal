@@ -9,14 +9,14 @@ const TodoSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    userId: {
-        type: String,
-        required: true
-    },
+    // userId: {
+    //     type: String,
+    //     required: true
+    // },
     // added a sharedId to record who shared the todo
-    sharedId: {
-        type: String,
-        required: false
+    userId: {
+        type: "array",
+        required: true
     }
 })
 
