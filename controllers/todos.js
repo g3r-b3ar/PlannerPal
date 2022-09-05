@@ -5,34 +5,31 @@ module.exports = {
     getTodos: async (req, res) => {
         // console.log(req.user)
         try {
-          // ***do we need to change userId to userId: req.user.id || matching req.user.id
-          // ***and similarly for itemsLeft ???
+            // ***do we need to change userId to userId: req.user.id || matching req.user.id
+            // ***and similarly for itemsLeft ???
             const todoItems = await Todo.find({
                 userId: req.user.id
-                // sharedId: req.user.id
-          // console.log(req.user.id)
             })
-            // const sharedItems = await Todo.find({
-            //     // userId: req.user.id
-            //     sharedId: req.user.id
-            // })
-            // const sharedItems = await Todo.find({ sharedId: req.user.id })
+            const sharedItems = await Todo.find({
+                userId: req.user.id
+            })
+
             const itemsLeft = await Todo.countDocuments({
                 userId: req.user.id,
                 completed: false
             })
-            const sharedItemsLeft = await Todo.countDocuments({
-                sharedId: req.user.id,
-                completed: false
-            })
+            // const sharedItemsLeft = await Todo.countDocuments({
+            //     sharedId: req.user.id,
+            //     completed: false
+            // })
             res.render('todos.ejs', {
                 todos: todoItems,
-                sharedTodos: sharedItems,
+                // sharedTodos: sharedItems,
                 left: itemsLeft,
-                sharedLeft: sharedItemsLeft,
+                // sharedLeft: sharedItemsLeft,
                 user: req.user
             })
-            console.log(sharedItems)
+            // console.log(sharedItems)
         } catch (err) {
             console.log(err)
         }
@@ -41,25 +38,24 @@ module.exports = {
         // console.log(req.user)
         // console.log(req.user.userName)
         try {
+            const sharedItems = await Todo.find({
+                userId: req.user.id
+            })
             const shareCreator = req.user.userName
             const shareCreatorId = req.user._id // MongoDb User Id for creator of the share
             const shareRecipient = req.body.shareReceiver // userName used to search DB from form
-            const dbObjectId = this.parentNode.dataset.id
-            const dbObjectData = await User.findOne({
-                _id: dbObjectId
-            })
+            const dbObjectId = sharedItems._id // id from the DOM for a todo item
+            const dbObjectData = await User.findById(dbObjectId)
             const recipientData = await User.findOne({
                 userName: shareRecipient
             })
             const recipientId = recipientData._id
             const dbObjectUserArray = dbObjectData.userId
-            console.log(dbObjectData)
-            console.log(dbObjectUserArray)
-          
+            console.log(`${dbObjectData} !!!!!!!`)
+            console.log(`${dbObjectUserArray} ????????`)
+
             // function to search the DB and find a userName that matches input from form, responds with entire user object
-            const recipientData = await User.findOne({
-                userName: shareRecipient
-            })
+            // *** just for now, we are searching by userId, but will later search by userName
             // creating a todo for the recipient of the todo
             // await Todo.create({
             //     todo: itemText, // this is a test todo item will change later
@@ -69,7 +65,7 @@ module.exports = {
             // })
             await Todo.findOneAndUpdate(
                 { _id: dbObjectId },
-                { $push: { recipientId } }  
+                { $push: { userId: { recipientId } } }
             )
             // console.log(
             //     `${shareCreator} has shared ${todo} todo with ${shareRecipient}`

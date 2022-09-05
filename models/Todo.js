@@ -14,10 +14,13 @@ const TodoSchema = new mongoose.Schema({
     //     required: true
     // },
     // added a sharedId to record who shared the todo
-    userId: {
-        type: "array",
-        required: true
-    }
+    userId: [
+        {
+            //make a array of strings for userID
+            type: String,
+            required: true
+        }
+    ]
 })
 
 module.exports = mongoose.model('Todo', TodoSchema)
