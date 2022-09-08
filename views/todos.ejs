@@ -14,11 +14,11 @@
             <li class='todoItem' data-id='<%=el._id%>'>
                 <span class='<%= el.completed === true ? 'completed' : 'not'%>'><%= el.todo %></span>
                 <span class='del'> Delete </span>
-                <!-- <span class='share'> Share </span> -->
 
                 <form action="/todos/shareTodo" method='POST'>
-                    <input type="text" placeholder="Share with someone" name='shareReceiver'>
                     <input type="hidden" name="_method" value="PUT">
+                    <input type="hidden" name="todoId" value="<%=el._id%>">
+                    <input type="text" placeholder="Share with someone" name='shareReceiver'>
                     <input class='share' type="submit">
                 </form>
             </li>
